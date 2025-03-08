@@ -182,6 +182,14 @@ class ScoutingManager(DatabaseManager):
                 "defense_rating": int(data.get("defense_rating", 1)),
                 "defense_notes": data.get("defense_notes", ""),
 
+                # Mobility
+                "mobility_rating": int(data.get("mobility_rating", 1)),
+                "mobility_notes": data.get("mobility_notes", ""),
+
+                # Durability
+                "durability_rating": int(data.get("durability_rating", 1)),
+                "durability_notes": data.get("durability_notes", ""),
+
                 # Auto
                 "auto_path": data.get("auto_path", ""),
                 "auto_notes": data.get("auto_notes", ""),
@@ -260,6 +268,10 @@ class ScoutingManager(DatabaseManager):
                     "climb_success": 1,
                     "defense_rating": 1,
                     "defense_notes": 1,
+                    "mobility_rating": 1,
+                    "mobility_notes": 1,
+                    "durability_rating": 1,
+                    "durability_notes": 1,
                     "auto_path": 1,
                     "auto_notes": 1,
                     "notes": 1,
@@ -390,7 +402,14 @@ class ScoutingManager(DatabaseManager):
                 "defense_rating": int(data.get("defense_rating", 1)),
                 "defense_notes": data.get("defense_notes", ""),
 
-                
+                # Mobility
+                "mobility_rating": int(data.get("mobility_rating", 1)),
+                "mobility_notes": data.get("mobility_notes", ""),
+
+                # Durability
+                "durability_rating": int(data.get("durability_rating", 1)),
+                "durability_notes": data.get("durability_notes", ""),
+
                 # Auto
                 "auto_path": data.get("auto_path", ""),
                 "auto_notes": data.get("auto_notes", ""),

@@ -21,6 +21,14 @@ const filterRows = () => {
                 case 'scouter':
                     searchValue = row.dataset.scouter.toLowerCase();
                     break;
+                case 'notes':
+                    // Combine all note fields for searching
+                    searchValue = (
+                        (row.dataset.notes || '') + ' ' +
+                        (row.dataset.mobilityNotes || '') + ' ' +
+                        (row.dataset.durabilityNotes || '')
+                    ).toLowerCase();
+                    break;
             }
 
             row.style.display = searchValue.includes(searchTerm) ? '' : 'none';
@@ -94,7 +102,6 @@ function closeAutoPathModal() {
     }
 }
 
-
 document.addEventListener('DOMContentLoaded', function() {
     filterType = document.getElementById('filterType');
     searchInput = document.getElementById('searchInput');
@@ -113,4 +120,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Add tooltips or popovers for mobility and durability ratings
+    const mobilityRatings = document.querySelectorAll('.md\\:table-cell span[title]');
+    mobilityRatings.forEach(span => {
+        // Use title attribute as tooltip (browser default)
+        // You could enhance this with a custom tooltip library if needed
+        if (span.title && span.title.trim() !== '') {
+            span.classList.add('cursor-help');
+        }
+    });
 });

@@ -81,6 +81,7 @@
                     <option value="team">Team Number</option>
                     <option value="match">Match Number</option>
                     <option value="scouter">Scouter</option>
+                    <option value="notes">All Notes</option>
                 </select>
             </div>
 
@@ -137,7 +138,13 @@
                                 Auto Path
                             </th>
                             <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Defense
+                                Defense (1-5)
+                            </th>
+                            <th class="md:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Mobility (1-5)
+                            </th>
+                            <th class="md:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Durability (1-5)
                             </th>
                             <th class="lg:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Notes
@@ -156,6 +163,8 @@
                             data-team-number="{{ data.team_number|string }}"
                             data-event-code="{{ data.event_code }}"
                             data-notes="{{ data.notes }}"
+                            data-mobility-notes="{{ data.mobility_notes }}"
+                            data-durability-notes="{{ data.durability_notes }}"
                             data-scouter="{{ data.scouter_name }}">  
                             <!-- In the team number cell -->
                             <td class="px-3 sm:px-6 py-4">
@@ -209,6 +218,12 @@
                             </td>
                             <td class="px-3 sm:px-6 py-4 whitespace-nowrap">
                                 {{ data.defense_rating }}/5
+                            </td>
+                            <td class="md:table-cell px-3 sm:px-6 py-4 whitespace-nowrap">
+                                <span title="{{ data.mobility_notes }}">{{ data.mobility_rating }}/5</span>
+                            </td>
+                            <td class="md:table-cell px-3 sm:px-6 py-4 whitespace-nowrap">
+                                <span title="{{ data.durability_notes }}">{{ data.durability_rating }}/5</span>
                             </td>
                             <td class="lg:table-cell px-3 sm:px-6 py-4 whitespace-normal max-w-xs truncate">{{ data.notes }}</td>
                             <td class="px-3 sm:px-6 py-4 whitespace-nowrap">

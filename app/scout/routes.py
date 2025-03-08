@@ -232,6 +232,10 @@ def compare_teams():
                             "match_number": "$match_number"
                         }},
                         "defense_rating": {"$avg": "$defense_rating"},
+                        "mobility_rating": {"$avg": "$mobility_rating"},
+                        "mobility_notes": {"$push": "$mobility_notes"},
+                        "durability_rating": {"$avg": "$durability_rating"},
+                        "durability_notes": {"$push": "$durability_notes"},
                         "preferred_climb_type": {"$last": "$climb_type"},
                         "matches": {"$push": "$$ROOT"}
                     }}

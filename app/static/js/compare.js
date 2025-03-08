@@ -117,6 +117,20 @@ function updateTeamCards(data) {
         // Update Defense Notes - Fixed to handle array properly
         const defenseNotes = teamData.stats?.defense_notes?.[0] || 'No defense notes available';
         document.getElementById(`team${cardNum}-defense-notes`).textContent = defenseNotes;
+
+        // Update Mobility stats
+        document.getElementById(`team${cardNum}-mobility`).textContent = `${(stats.mobility_rating || 0).toFixed(1)}/5`;
+        
+        // Update Mobility Notes
+        const mobilityNotes = teamData.stats?.mobility_notes?.[0] || 'No mobility notes available';
+        document.getElementById(`team${cardNum}-mobility-notes`).textContent = mobilityNotes;
+        
+        // Update Durability stats
+        document.getElementById(`team${cardNum}-durability`).textContent = `${(stats.durability_rating || 0).toFixed(1)}/5`;
+        
+        // Update Durability Notes
+        const durabilityNotes = teamData.stats?.durability_notes?.[0] || 'No durability notes available';
+        document.getElementById(`team${cardNum}-durability-notes`).textContent = durabilityNotes;
     });
 
     // Hide team3 card if no third team
