@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.2.1/compressor.min.js"></script>
+{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
@@ -109,11 +112,36 @@ function handleLogoChange(input) {
     }
 
     if (file) {
+        // Show immediate preview first before compression starts
         const reader = new FileReader();
         reader.onload = function(e) {
             preview.src = e.target.result;
-        }
+        };
         reader.readAsDataURL(file);
+        
+        // Then use Compressor.js to compress the image in background
+        try {
+            new Compressor(file, {
+                quality: 0.8,
+                maxWidth: 400, // Match recommended size
+                maxHeight: 400,
+                mimeType: 'image/jpeg',
+                success(result) {
+                    // Replace the file in the input with the compressed one
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(new File([result], file.name, { type: 'image/jpeg' }));
+                    input.files = dataTransfer.files;
+                    console.log('Team logo compressed successfully');
+                },
+                error(err) {
+                    console.error('Image compression failed:', err);
+                    // No need to update preview again since we already did it above
+                }
+            });
+        } catch (err) {
+            console.error('Error initializing compressor:', err);
+            // The preview is already shown above, so no need for fallback here
+        }
     }
 }
 
