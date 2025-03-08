@@ -31,7 +31,7 @@ def on_blueprint_init(state):
 
 @scouting_bp.route("/scouting/add", methods=["GET", "POST"])
 @login_required
-@limiter.limit("10 per minute")
+@limiter.limit("15 per minute")
 @handle_route_errors
 def add():
     if request.method != "POST":
@@ -92,7 +92,7 @@ def home():
 
 
 @scouting_bp.route("/scouting/edit/<string:id>", methods=["GET", "POST"])
-@limiter.limit("10 per minute")
+@limiter.limit("15 per minute")
 @login_required
 def edit(id):
     try:
@@ -130,7 +130,7 @@ def edit(id):
 
 
 @scouting_bp.route("/scouting/delete/<string:id>")
-@limiter.limit("5 per minute")
+@limiter.limit("10 per minute")
 @login_required
 def delete(id):
     try:
@@ -785,7 +785,7 @@ def check_team():
 
 @scouting_bp.route("/scouting/pit")
 @login_required
-@limiter.limit("30 per minute")
+@limiter.limit("50 per minute")
 def pit_scouting():
     try:
         # Update to use filtered pit scouting data
@@ -801,7 +801,7 @@ def pit_scouting():
 
 @scouting_bp.route("/scouting/pit/add", methods=["GET", "POST"])
 @login_required
-@limiter.limit("10 per minute")
+@limiter.limit("15 per minute")
 def pit_scouting_add():
     if request.method == "POST":
         try:
@@ -890,7 +890,7 @@ def pit_scouting_add():
 
 @scouting_bp.route("/scouting/pit/edit/<int:team_number>", methods=["GET", "POST"])
 @login_required
-@limiter.limit("5 per minute")
+@limiter.limit("10 per minute")
 def pit_scouting_edit(team_number):
     pit_data = scouting_manager.get_pit_scouting(team_number)
     if not pit_data:
@@ -966,7 +966,6 @@ def pit_scouting_edit(team_number):
     return render_template("scouting/pit-scouting-edit.html", pit_data=pit_data)
 
 @scouting_bp.route("/scouting/pit/delete/<int:team_number>")
-@limiter.limit("5 per minute")
 @login_required
 def pit_scouting_delete(team_number):
     if scouting_manager.delete_pit_scouting(team_number, current_user.get_id()):

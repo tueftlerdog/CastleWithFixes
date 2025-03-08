@@ -30,7 +30,6 @@ def on_blueprint_init(state):
 
 @team_bp.route("/join", methods=["GET", "POST"])
 @login_required
-@limiter.limit("3 per minute")
 @async_route
 async def join():
     try:
@@ -65,7 +64,7 @@ async def join():
 
 @team_bp.route("/create", methods=["GET", "POST"])
 @login_required
-@limiter.limit("3 per minute")
+@limiter.limit("5 per minute")
 @async_route
 async def create():
     """Handle team creation"""
@@ -131,7 +130,7 @@ async def create():
 
 @team_bp.route("/<int:team_number>/leave", methods=["GET", "POST"])
 @login_required
-@limiter.limit("3 per minute")
+@limiter.limit("5 per minute")
 @async_route
 async def leave(team_number):
     """Leave a team"""
@@ -362,7 +361,7 @@ async def remove_user(team_number, user_id):
 
 @team_bp.route("/<int:team_number>/assignments/clear", methods=["POST"])
 @login_required
-@limiter.limit("5 per minute")
+@limiter.limit("10 per minute")
 @async_route
 async def clear_assignments(team_number):
     """Clear all assignments for a team (admin only)"""
@@ -387,7 +386,7 @@ async def clear_assignments(team_number):
 
 @team_bp.route("/<int:team_number>/delete", methods=["POST"])
 @login_required
-@limiter.limit("5 per minute")
+@limiter.limit("10 per minute")
 @async_route
 async def delete_team(team_number):
     """Delete team (owner only)"""
