@@ -460,8 +460,66 @@ def leaderboard():
     try:
         MIN_MATCHES = 1
         sort_type = request.args.get('sort', 'coral')
+        selected_event = request.args.get('event', 'all')
         
+        # Get available events from scouting data
+        # Filter by team access: only show events from user's team or user himself
+        events_pipeline = [
+            # Join with users collection to get scouter information
+            {
+                "$lookup": {
+                    "from": "users",
+                    "localField": "scouter_id",
+                    "foreignField": "_id",
+                    "as": "scouter"
+                }
+            },
+            {"$unwind": "$scouter"},
+            # Filter by team access
+            {"$match": {
+                "$or": [
+                    {"scouter.teamNumber": current_user.teamNumber} if hasattr(current_user, 'teamNumber') and current_user.teamNumber else {},
+                    {"scouter._id": ObjectId(current_user.get_id())}
+                ]
+            }},
+            # Group by event code to get unique events
+            {"$group": {
+                "_id": "$event_code",
+                "event_name": {"$first": "$event_name"},
+                "count": {"$sum": 1}
+            }},
+            {"$sort": {"_id": 1}}
+        ]
+        
+        events = list(scouting_manager.db.team_data.aggregate(events_pipeline))
+        
+        # Main pipeline for team data
         pipeline = [
+            # Join with users collection to get scouter information
+            {
+                "$lookup": {
+                    "from": "users",
+                    "localField": "scouter_id",
+                    "foreignField": "_id",
+                    "as": "scouter"
+                }
+            },
+            {"$unwind": "$scouter"},
+            # Filter by team access
+            {"$match": {
+                "$or": [
+                    {"scouter.teamNumber": current_user.teamNumber} if hasattr(current_user, 'teamNumber') and current_user.teamNumber else {},
+                    {"scouter._id": ObjectId(current_user.get_id())}
+                ]
+            }}
+        ]
+        
+        # Filter by selected event if not 'all'
+        if selected_event != 'all':
+            pipeline.append({"$match": {"event_code": selected_event}})
+        
+        # Continue with the existing aggregation
+        pipeline.extend([
             {"$group": {
                 "_id": "$team_number",
                 "matches_played": {"$sum": 1},
@@ -484,6 +542,10 @@ def leaderboard():
                 
                 # Defense Rating
                 "defense_rating": {"$avg": {"$ifNull": ["$defense_rating", 0]}},
+                # Mobility Rating
+                "mobility_rating": {"$avg": {"$ifNull": ["$mobility_rating", 0]}},
+                # Durability Rating
+                "durability_rating": {"$avg": {"$ifNull": ["$durability_rating", 0]}},
 
                 # Climb stats
                 "climb_attempts": {"$sum": 1},
@@ -583,9 +645,11 @@ def leaderboard():
                         100
                     ]
                 },
-                "defense_rating": {"$round": ["$defense_rating", 1]}
+                "defense_rating": {"$round": ["$defense_rating", 1]},
+                "mobility_rating": {"$round": ["$mobility_rating", 1]},
+                "durability_rating": {"$round": ["$durability_rating", 1]}
             }}
-        ]
+        ])
 
         # Add sorting based on selected type
         sort_field = {
@@ -596,7 +660,9 @@ def leaderboard():
             'auto_algae': 'total_auto_algae',
             'teleop_algae': 'total_teleop_algae',
             'deep_climb': 'deep_climb_success_rate',
-            'defense': 'defense_rating'
+            'defense': 'defense_rating',
+            'mobility': 'mobility_rating',
+            'durability': 'durability_rating'
         }.get(sort_type, 'total_coral')
 
         if sort_type == 'deep_climb':
@@ -609,10 +675,12 @@ def leaderboard():
         pipeline.append({"$sort": {sort_field: -1}})
 
         teams = list(scouting_manager.db.team_data.aggregate(pipeline))
-        return render_template("scouting/leaderboard.html", teams=teams, current_sort=sort_type)
+        return render_template("scouting/leaderboard.html", teams=teams, current_sort=sort_type, 
+                              events=events, selected_event=selected_event)
     except Exception as e:
         # print(f"Error in leaderboard: {str(e)}")
-        return render_template("scouting/leaderboard.html", teams=[], current_sort='coral')
+        return render_template("scouting/leaderboard.html", teams=[], current_sort='coral', 
+                              events=[], selected_event='all')
 
 
 @scouting_bp.route("/scouting/matches")
