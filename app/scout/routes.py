@@ -102,12 +102,12 @@ def edit(id):
             flash("Team data not found", "error")
             return redirect(url_for("scouting.home"))
 
-        if not team_data.is_owner:
-            flash("Access denied", "error")
-            return redirect(url_for("scouting.home"))
-
         if request.method == "POST":
             data = request.form.to_dict()
+            
+            # Add edit tracking - record who made the edit
+            data['last_edited_by'] = current_user.get_id()
+            data['last_edited_at'] = datetime.now().isoformat()
             
             # Convert the drawing coordinates from string to JSON if present
             if "auto_path_coords" in data and isinstance(data["auto_path_coords"], str):

@@ -276,7 +276,11 @@
                                             <span class="sm:hidden">🗑️</span>
                                         </a>
                                     {% else %}
-                                        <span class="text-gray-400 text-sm">No Access</span>
+                                        <a href="{{ url_for('scouting.edit', id=data._id) }}" 
+                                           class="text-indigo-600 hover:text-indigo-900">
+                                            <span class="hidden sm:inline">Edit Match</span>
+                                            <span class="sm:hidden">📝</span>
+                                        </a>
                                     {% endif %}
                                 </div>
                             </td>
